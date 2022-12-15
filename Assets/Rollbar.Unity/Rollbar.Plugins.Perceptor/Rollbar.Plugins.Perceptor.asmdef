@@ -1,0 +1,25 @@
+{
+    "name": "Rollbar.Plugins.Perceptor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:e1775fab26c8eb04ca4fd90eba6cb35d",
+        "GUID:d06f234cedf03a546807d093bc1d736b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "PERCEPTOR"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.rhinox.open.perceptor",
+            "expression": "0.1.6",
+            "define": "PERCEPTOR"
+        }
+    ],
+    "noEngineReferences": false
+}

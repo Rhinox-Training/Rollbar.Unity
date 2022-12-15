@@ -1,0 +1,26 @@
+{
+  "name": "com.rhinox.open.rollbar",
+  "displayName": "Rollbar Integration for Unity",
+  "version": "0.1.0",
+  "unity": "2021.2",
+  "description": "Coding extensions library: New basic datatypes, static helper methods and extensions on Unity datatypes ",
+  "keywords": [
+    "csharp",
+    "unity",
+    "extensions"
+  ],
+  "category": "Unity",
+  "dependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rhinox-Training/Rollbar.Unity.git"
+  },
+  "author": "Rhinox",
+  "license": "Apache V.2",
+  "bugs": {
+    "url": "https://github.com/Rhinox-Training/Rollbar.Unity/issues"
+  },
+  "homepage": "https://github.com/Rhinox-Training/Rollbar.Unity#readme",
+  "type": "library"
+}
