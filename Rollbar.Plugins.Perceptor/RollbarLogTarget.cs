@@ -10,13 +10,15 @@ namespace Rhinox.Rollbar.Unity
     {
         private readonly IRollbarLoggerConfig _config;
         private readonly IRollbar _logger;
+        private readonly LogLevels _maxLogLevel;
 
-        public RollbarLogTarget(IRollbarLoggerConfig config)
+        public RollbarLogTarget(IRollbarLoggerConfig config, LogLevels maxLogLevel = LogLevels.Info)
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));
             _config = config;
             _logger = RollbarFactory.CreateNew(_config);
+            _maxLogLevel = maxLogLevel;
 
             if (_logger != null)
                 Application.logMessageReceived += OnMessageReceived;
@@ -31,8 +33,9 @@ namespace Rhinox.Rollbar.Unity
 
         protected override void OnLog(LogLevels level, string message, Object associatedObject = null)
         {
-            if (_logger == null)
+            if (_logger == null || level > _maxLogLevel || _maxLogLevel == LogLevels.None)
                 return;
+            
             switch (level)
             {
                 case LogLevels.Trace:
@@ -60,7 +63,7 @@ namespace Rhinox.Rollbar.Unity
         
         private void OnMessageReceived(string condition, string stacktrace, LogType type)
         {
-            if (type == LogType.Exception)
+            if (type == LogType.Exception && _maxLogLevel != LogLevels.None)
             {
                 _logger.Critical(condition + "\n" + stacktrace);
             }
