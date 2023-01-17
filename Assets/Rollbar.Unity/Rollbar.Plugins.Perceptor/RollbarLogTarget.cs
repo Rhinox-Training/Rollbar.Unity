@@ -33,7 +33,7 @@ namespace Rhinox.Rollbar.Unity
 
         protected override void OnLog(LogLevels level, string message, Object associatedObject = null)
         {
-            if (_logger == null || level > _maxLogLevel || _maxLogLevel == LogLevels.None)
+            if (_logger == null || level < _maxLogLevel || _maxLogLevel == LogLevels.None)
                 return;
             
             switch (level)
