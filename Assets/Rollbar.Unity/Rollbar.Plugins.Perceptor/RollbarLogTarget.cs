@@ -35,29 +35,36 @@ namespace Rhinox.Rollbar.Unity
         {
             if (_logger == null || level < _maxLogLevel || _maxLogLevel == LogLevels.None)
                 return;
-            
-            switch (level)
+
+            try
             {
-                case LogLevels.Trace:
-                case LogLevels.Debug:
-                    _logger.Debug(message);
-                    break;
-                case LogLevels.Info:
-                    _logger.Info(message);
-                    break;
-                case LogLevels.Warn:
-                    _logger.Warning(message);
-                    break;
-                case LogLevels.Error:
-                    _logger.Error(message);
-                    break;
-                case LogLevels.Fatal:
-                    _logger.Critical(message);
-                    break;
-                case LogLevels.None:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(level), level, null);
+                switch (level)
+                {
+                    case LogLevels.Trace:
+                    case LogLevels.Debug:
+                        _logger.Debug(message);
+                        break;
+                    case LogLevels.Info:
+                        _logger.Info(message);
+                        break;
+                    case LogLevels.Warn:
+                        _logger.Warning(message);
+                        break;
+                    case LogLevels.Error:
+                        _logger.Error(message);
+                        break;
+                    case LogLevels.Fatal:
+                        _logger.Critical(message);
+                        break;
+                    case LogLevels.None:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(level), level, null);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Could not log '{message}', reason:\n{e.ToString()}");
             }
         }
         
