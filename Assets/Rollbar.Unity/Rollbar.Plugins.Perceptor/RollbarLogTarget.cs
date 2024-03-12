@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+
 using Rhinox.Perceptor;
 using Rollbar;
 using UnityEngine;
@@ -8,9 +10,36 @@ namespace Rhinox.Rollbar.Unity
 {
     public class RollbarLogTarget : BaseLogTarget, IDisposable
     {
+        private class ExceptionOccurenceTracker : IEquatable<ExceptionOccurenceTracker>
+        {
+            public int OccurencesSinceLastLog;
+            public DateTime LastLog;
+            public string Condition;
+            public string StackTrace;
+            
+#region Equatable
+            public bool Equals(ExceptionOccurenceTracker other)
+            {
+                return Condition == other.Condition && StackTrace == other.StackTrace;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is ExceptionOccurenceTracker other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(Condition, StackTrace);
+            }
+#endregion
+        }
+        
         private readonly IRollbarLoggerConfig _config;
         private readonly IRollbar _logger;
         private readonly LogLevels _maxLogLevel;
+
+        private HashSet<ExceptionOccurenceTracker> _exceptionOccurences = new HashSet<ExceptionOccurenceTracker>();
 
         public RollbarLogTarget(IRollbarLoggerConfig config, LogLevels maxLogLevel = LogLevels.Info)
         {
@@ -72,8 +101,37 @@ namespace Rhinox.Rollbar.Unity
         {
             if (type == LogType.Exception && _maxLogLevel != LogLevels.None)
             {
-                _logger.Critical(condition + "\n" + stacktrace);
+                var data = new ExceptionOccurenceTracker
+                {
+                    Condition = condition,
+                    StackTrace = stacktrace,
+                    LastLog = DateTime.Now
+                };
+                
+                if (_exceptionOccurences.TryGetValue(data, out data))
+                {
+                    var timeBeforeRelog = TimeSpan.FromSeconds(_config.RollbarUnityOptions.SecondsBeforeExceptionGetsRelogged);
+                    if (DateTime.Now - data.LastLog > timeBeforeRelog)
+                        LogException(data);
+                    else
+                        data.OccurencesSinceLastLog += 1;
+                }
+                else
+                    LogException(data);
             }
+        }
+
+        private void LogException(ExceptionOccurenceTracker e)
+        {
+            string msg = e.Condition;
+            if (e.OccurencesSinceLastLog > 0)
+                msg += $"; Occurrences since last appearance: {e.OccurencesSinceLastLog}";
+            msg += $"\n{e.StackTrace}";
+            
+            e.LastLog = DateTime.Now;
+            e.OccurencesSinceLastLog = 0;
+            _exceptionOccurences.Add(e);
+            _logger.Critical(msg);
         }
     }
 }
