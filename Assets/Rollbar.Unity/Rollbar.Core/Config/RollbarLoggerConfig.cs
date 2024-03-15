@@ -52,12 +52,6 @@
         /// </summary>
         private readonly RollbarPayloadManipulationOptions _rollbarPayloadManipulationOptions = 
             new RollbarPayloadManipulationOptions();
-        
-        /// <summary>
-        /// The rollbar payload manipulation options
-        /// </summary>
-        private readonly RollbarUnityOptions _rollbarUnityOptions = 
-            new RollbarUnityOptions();
 
         /// <summary>
         /// The logger
@@ -251,14 +245,6 @@
             get
             {
                 return this._rollbarPayloadManipulationOptions;
-            }
-        }
-
-        public IRollbarUnityOptions RollbarUnityOptions
-        {
-            get
-            {
-                return this._rollbarUnityOptions;
             }
         }
 

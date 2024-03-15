@@ -53,8 +53,5 @@
         /// </summary>
         /// <value>The rollbar payload manipulation options.</value>
         IRollbarPayloadManipulationOptions RollbarPayloadManipulationOptions { get; }
-        
-        
-        IRollbarUnityOptions RollbarUnityOptions { get; }
     }
 }
