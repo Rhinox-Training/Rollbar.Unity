@@ -45,6 +45,8 @@ namespace Rhinox.Rollbar.Unity
             }
 #endregion
         }
+
+        public string TableReference = "Unknown";
         
         private readonly IRollbarLoggerConfig _config;
         private readonly IRollbar _logger;
@@ -181,7 +183,7 @@ namespace Rhinox.Rollbar.Unity
 
         private string GetLogMessage(OccurenceTracker o)
         {
-            string msg = o.Condition;
+            string msg = $"Table: '{TableReference}'; {o.Condition}";
             if (o.OccurencesSinceLastLog > 1)
                 msg += $"; Occurrences since last appearance: {o.OccurencesSinceLastLog}";
             if (!string.IsNullOrWhiteSpace(o.StackTrace))
